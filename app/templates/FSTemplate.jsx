@@ -9,12 +9,17 @@ export default class FSTemplate extends FieldSetTemplate {
     render() {
         var {size, legend, buttons, className, ...rest} = this.props.field || {};
 
-        return legend ? 
+        let res = '';
+        if (legend) {
+            res = <div className="panel-heading">
+                    <h3 className="panel-title">{legend}</h3>
+                </div>;      
+        }
+
+        return legend !== undefined ? 
             <Col size={size}>
                 <div className="panel panel-default">
-                  <div className="panel-heading">
-                    <h3 className="panel-title">{legend}</h3>
-                  </div>
+                  {res}
                   <div className="panel-body">
                     {this.props.children}
                     {this.renderButtons(buttons)}

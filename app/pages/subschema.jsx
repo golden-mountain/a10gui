@@ -69,7 +69,7 @@ class SubschemaPage extends Component {
       fieldsets: [
           { template: FSTemplate, size:6, fieldsets: 
             [
-              {fields: [ 'title', 'email', 'name', 'password', 'areYouSure' ], template: FSTemplate, legend: 'Basic' }, 
+              {fields: [ 'title', 'email', 'name', 'password', 'areYouSure' ], template: FSTemplate, legend: '' }, 
               {fields: [ 'title', 'email', 'name', 'password', 'areYouSure' ], template: FSTemplate, legend: 'Advance' }
             ]
           },
