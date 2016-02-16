@@ -28,6 +28,10 @@ export default function (flux) { /* eslint react/display-name: 0 */
         paths: [ '/login', '/connexion' ],
         component: require('./pages/login')
       }) }
+      { generateRoute({
+        paths: [ '/subschema' ],
+        component: require('./pages/subschema')
+      }) }
       <Route path='*' component={ require('./pages/not-found') } />
     </Route>
   );
