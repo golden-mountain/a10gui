@@ -4,8 +4,7 @@
   "description": "An ES7 isomorphic Flux/ReactJS boilerplate",
   "main": "server/index.js",
   "scripts": {
-    "clean": "rm -rf dist",
-    "build": "node_modules/.bin/babel-node -- ./node_modules/webpack/bin/webpack.js --stats --config  ./webpack/prod.config.js",
+    "build": "rm -rf dist && babel-node ./node_modules/.bin/webpack --stats --config ./webpack/prod.config.js",
     "dev": "babel-node ./webpack/dev-server.js",
     "test": "babel-node ./node_modules/.bin/karma start --single-run",
     "dev-test": "babel-node ./node_modules/.bin/karma start",

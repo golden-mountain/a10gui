@@ -1,5 +1,6 @@
 .app--footer {
   margin-top: 50px;
+  clear:both;
 
   iframe:first-child {
     margin-right: 25px;

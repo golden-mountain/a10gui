@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { Form, ValueManager as valueManager } from 'subschema/dist/subschema-server';
 import SwitchButton from 'widgets/SwitchButton';
+import FSTemplate from 'templates/FSTemplate';
 
 // loader, templates
 class SubschemaPage extends Component {
@@ -66,8 +67,13 @@ class SubschemaPage extends Component {
         notes: { type: 'List', itemType: 'Text' }
       },
       fieldsets: [
-         { legend: 'Name', fields: [ 'title', 'email', 'name', 'password' , 'areYouSure' ] },
-         { legend: 'Address', fields: [ 'address.street', 'address.city', 'address.zip' ] }
+          { template: FSTemplate, size:6, fieldsets: 
+            [
+              {fields: [ 'title', 'email', 'name', 'password', 'areYouSure' ], template: FSTemplate, legend: 'Basic' }, 
+              {fields: [ 'title', 'email', 'name', 'password', 'areYouSure' ], template: FSTemplate, legend: 'Advance' }
+            ]
+          },
+          { legend: 'Address', template: FSTemplate, size:6, fields: [ 'address.street', 'address.city', 'address.zip' ] }
       ]
 
     };
@@ -77,8 +83,14 @@ class SubschemaPage extends Component {
           method='post'
           onSubmit={ ::this.handleSubmit }
           valueManager={ this.valueManager }
-          schema= { schema } >
-          <button type='submit'>Submit</button>
+          className='container-fluid'
+          schema={ schema } >
+          <div className='col col-md-12 '>
+            <div className='pull-right'>
+              <button type='submit' className='btn btn-success' >Create</button>
+              <button type='button' className='btn btn-default' >Cancel</button>
+            </div>
+          </div>
         </Form>
 
     );

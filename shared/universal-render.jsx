@@ -26,6 +26,7 @@ const bootstrap = () =>
 // https://github.com/eslint/eslint/issues/4442
 export default async function({ flux, history, location }) {
   if (BROWSER) {
+    debug('dev')('browser rendering');
     if (NODE_ENV === 'development') require('alt-utils/lib/chromeDebug')(flux);
 
     const { container, initialState } = await bootstrap();
@@ -57,6 +58,7 @@ export default async function({ flux, history, location }) {
     // next promises will be resolved
     flux.resolver.firstRender = false;
   } else {
+    debug('dev')('server rendering');
     const routes = require('routes')(flux);
     const I18nContainer = require('utils/i18n-container');
     const [ error, redirect, renderProps ] = await runRouter(location, routes);
