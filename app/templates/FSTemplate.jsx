@@ -26,9 +26,11 @@ export default class FSTemplate extends FieldSetTemplate {
                   </div>
                 </div>
             </Col> :
-            <Col size={size}>                
-                {this.props.children}
-                {this.renderButtons(buttons)}  
+            <Col size={size}>
+                <div className='row'>
+                    {this.props.children}
+                    {this.renderButtons(buttons)}  
+                </div>
             </Col>
 
     }
