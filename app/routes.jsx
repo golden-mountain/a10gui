@@ -32,6 +32,10 @@ export default function (flux) { /* eslint react/display-name: 0 */
         paths: [ '/subschema' ],
         component: require('./pages/subschema')
       }) }
+      { generateRoute({
+        paths: [ '/customized-ui' ],
+        component: require('./pages/customized-ui')
+      }) }
       <Route path='*' component={ require('./pages/not-found') } />
     </Route>
   );
