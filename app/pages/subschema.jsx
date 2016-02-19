@@ -1,8 +1,21 @@
 import React, { Component, PropTypes } from 'react';
-import { Form, ValueManager as valueManager } from 'subschema/dist/subschema-server';
+import { Form, ValueManager as valueManager, loader } from 'subschema/dist/subschema-server';
 import SwitchButton from 'widgets/SwitchButton';
 import FSTemplate from 'templates/FSTemplate';
 import FmSTemplate from 'templates/FmTemplate';
+import { RaisedButton } from 'material-ui/lib';
+
+import { Radios, AxText, AxTable } from 'widgets';
+
+
+const styles = {
+  block: {
+    maxWidth: 250,
+  },
+  toggle: {
+    marginBottom: 16,
+  },
+};
 
 // loader, templates
 class SubschemaPage extends Component {
@@ -42,24 +55,26 @@ class SubschemaPage extends Component {
       schema: {
         title: { type: 'Select', options: [ 'Mr', 'Mrs', 'Ms' ] },
         name:  { type: 'Text', placeholder:'try to input zli' },
+        name2:  { type: 'AxText', placeholder:'demo for material ui', validators: [ 'required' ] }, 
         email: { validators: [ 'required', 'email' ] },
         birthday: 'Date',
+        radios: 'Radios',
         make: {
-          "title": "Make",
-          "type": "Select",
-          "placeholder": "Select a make",
-          "help": "try to select this item, see if model will be connected"
+          'title': 'Make',
+          'type': 'Select',
+          'placeholder': 'Select a make',
+          'help': 'try to select this item, see if model will be connected'
         },
         model: {
-          "title": "Model",
-          "type": "Select",
-          "placeholder": "Select a make first",
-          "conditional": {
-            "listen": "make",
-            "operator": "falsey"
+          'title': 'Model',
+          'type': 'Select',
+          'placeholder': 'Select a make first',
+          'conditional': {
+            'listen': 'make',
+            'operator': 'falsey'
           }
         },       
-        password: 'Password',
+        password: {type: 'Password', validators: [ 'required' ]},
         areYouSure: {
           type: 'SwitchButton',
           onText: 'On',
@@ -67,10 +82,10 @@ class SubschemaPage extends Component {
           title: 'Are you sure?'
         },
         content: {
-          type: "Content",
+          type: 'Content',
           title: 'Content Type',
-          className: "col-sm-offset-2",
-          content: "{title} {..name} is {birthday}"
+          className: 'col-sm-offset-2',
+          content: '{title} {..name} is {birthday}'
         },
         address: { 
           type: 'Object',
@@ -86,7 +101,8 @@ class SubschemaPage extends Component {
             }
           }
         },
-        notes: { type: 'List', itemType: 'Text' }
+        notes: { type: 'List', itemType: 'Text' },
+        table: { type: 'AxTable', title:''}
       },
       fieldsets: [
           { template: FSTemplate, size:6, fieldsets: 
@@ -98,10 +114,13 @@ class SubschemaPage extends Component {
                   value:'zli',
                   operator:'!=='
                 }
+              },
+              {
+                fields: [ 'address.street', 'address.city', 'address.zip' ], template: FSTemplate, legend: 'Address'
               }
             ]
           },
-          { legend: 'Address', template: FSTemplate, size:6, fields: [ 'address.street', 'address.city', 'address.zip' ] }
+          { legend: 'Material UI', template: FSTemplate, size:6, fields: [ 'table', 'name2', 'radios' ] }
       ]
 
     };
@@ -195,9 +214,9 @@ class SubschemaPage extends Component {
           template={ FmSTemplate }
           schema={ schema } >
           <div className='col col-md-12 '>
-            <div className='pull-right btn-group'>
-              <button type='submit' className='btn btn-success' >Create</button>
-              <button type='button' className='btn btn-default' >Cancel</button>
+            <div className='pull-right'>
+              <RaisedButton label='Create' type='submit' primary={ true } />
+              <RaisedButton label='Cancel' />              
             </div>
           </div>
         </Form>

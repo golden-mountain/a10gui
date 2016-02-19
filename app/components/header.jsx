@@ -55,10 +55,10 @@ class Header extends Component {
           activeLocale={ activeLocale }
           onChange={ ::this.handleLocaleChange } />
 
-        {/* React Logo in header */}
+        {/* React Logo in header
         <Link to='/' className='app--logo'>
           <img src={ reactLogo } alt='react-logo' />
-        </Link>
+        </Link> */}
 
         {/* Links in the navbar */}
         <ul className='app--navbar text-center reset-list un-select'>
