@@ -2,7 +2,11 @@ import React from 'react';
 import Container from '../components/Container';
 // import Subschema,{Form} from 'Subschema';
 import update from 'react/lib/update';
-import FormComponentCandidate from '../components/FormComponentCandidate';
+
+let idCount = 10;
+function getNextIdCount() {
+  return idCount++;
+}
 
 export default class CustomizedUI extends React.Component {
   static getProps() {
@@ -11,9 +15,21 @@ export default class CustomizedUI extends React.Component {
 
   constructor(props) {
     super(props);
-    this.moveComponent = this.moveComponent.bind(this);
-    this.state = {
-      components: [ {
+    this.state =  {
+      components: [{
+        id: 1,
+        schema: {
+          title: {
+            type: 'Select',
+            options: [
+              'Mr',
+              'Mrs',
+              'Ms'
+            ]
+          }
+        }
+      }],
+      componentCandidates: [ {
         id: 1,
         schema: {
           title: {
@@ -46,17 +62,36 @@ export default class CustomizedUI extends React.Component {
     };
   }
 
-  addComponent(name, type, options) {
+  addComponent(targetIndex, _schema) {
+    const id = getNextIdCount();
+    let schema = Object.assign({}, _schema);
+    const name = Object.keys(schema)[0];
+    schema[`${name}${id}`] = schema[`${name}`];
+    delete schema[`${name}`];
+
     const newComponent = {
-      id: this.state.components.length + 1,
-      schema: {}
+      id,
+      schema,
+      isAdding: true
     };
 
-    newComponent.schema[name] = options || {};
-    newComponent.schema[name].type = type;
     this.setState(update(this.state, {
       components: {
-        $push: [ newComponent ]
+        $splice: [
+          [ targetIndex, 0, newComponent ]
+        ]
+      }
+    }));
+  }
+
+  addedComponent(targetIndex) {
+    this.setState(update(this.state, {
+      components: {
+        [targetIndex]: {
+          isAdding: {
+            $set: false
+          }
+        }
       }
     }));
   }
@@ -75,7 +110,20 @@ export default class CustomizedUI extends React.Component {
     }));
   }
 
-  removeComponent(id, index) {
+  cancelAddComponent() {
+    const index = this.state.components.findIndex(function (item) {
+      return item.isAdding
+    });
+    this.setState(update(this.state, {
+      components: {
+        $splice: [
+          [ index, 1 ]
+        ]
+      }
+    }));
+  }
+
+  removeComponent(index) {
     this.setState(update(this.state, {
       components: {
         $splice: [
@@ -90,38 +138,34 @@ export default class CustomizedUI extends React.Component {
       return item.schema;
     })
     .reduce((memo, item) => {
-      const key = Object.keys(item)[0];
-      memo[key] = item[key];
+      if(item){
+        const key = Object.keys(item)[0];
+        memo[key] = item[key];
+      }
       return memo;
     }, {});
     return { schema: resultSchema };
   }
 
-  onClick() {
-    alert('test');
-  }
-
   render() {
-    const { components } = this.state;
+    const { components, componentCandidates } = this.state;
     const schema = this.getResultSchema();
 
     return (
-      <div>
+      <div style= { { padding: 10 } } >
         <h2>CustomizedUI</h2>
-        <button onClick={ ::this.onClick }>test123</button>
         <div style={ { display: 'flex' } }>
-          <div style={ { width: '30%' } }>
-            <h3>Insert Component</h3>
-            <FormComponentCandidate addComponent={ ::this.addComponent } />
-          </div>
-          <div style={ { width: '42%' } }>
-            <h3>Edit form here</h3>
+          <div style={ { width: '80%' } }>
             <Container
               components={ components }
+              componentCandidates= { componentCandidates }
+              addComponent={ ::this.addComponent }
+              addedComponent={ ::this.addedComponent }
+              cancelAddComponent= { ::this.cancelAddComponent }
               moveComponent={ ::this.moveComponent }
               removeComponent={ ::this.removeComponent } />
           </div>
-          <div style={ { width: '28%' } }>
+          <div style={ { width: '20%' } }>
             <h3>Schema</h3>
             <pre>{ JSON.stringify(schema, null, '  ') }</pre>
           </div>

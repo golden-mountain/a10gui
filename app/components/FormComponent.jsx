@@ -15,65 +15,98 @@ const formComponetSource = {
   beginDrag(props) {
     return {
       id: props.id,
-      index: props.index
+      index: props.index,
+      isNew: props.isNew,
+      schema: props.schema
     };
+  },
+  endDrag(props, monitor, component) {
+    const dropResult = monitor.getDropResult();
+    if(props.isNew && (!dropResult || dropResult.isNew)) {
+      props.cancelAddComponent()
+    }
+    if(props.addedComponent) {
+      props.addedComponent(monitor.getItem().index);
+    }
   }
 };
 
 const formComponentTarget = {
+  drop(props, monitor, component) {
+    return props;
+  },
+
   hover(props, monitor, component) {
-    const dragIndex = monitor.getItem().index;
-    const hoverIndex = props.index;
-
-    // Don't replace items with themselves
-    if (dragIndex === hoverIndex) {
+    const item = monitor.getItem();
+    if(props.isNew) {
+      //skip when hover target is new
       return;
     }
+    if(!item.isNew) {
+      const dragIndex = item.index;
+      const hoverIndex = props.index;
 
-    // Determine rectangle on screen
-    const hoverBoundingRect = findDOMNode(component).getBoundingClientRect();
+      // Don't replace items with themselves
+      if (dragIndex === hoverIndex) {
+        return;
+      }
 
-    // Get vertical middle
-    const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
+      // Determine rectangle on screen
+      const hoverBoundingRect = findDOMNode(component).getBoundingClientRect();
 
-    // Determine mouse position
-    const clientOffset = monitor.getClientOffset();
+      // Get vertical middle
+      const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
 
-    // Get pixels to the top
-    const hoverClientY = clientOffset.y - hoverBoundingRect.top;
+      // Determine mouse position
+      const clientOffset = monitor.getClientOffset();
 
-    // Only perform the move when the mouse has crossed half of the items height
-    // When dragging downwards, only move when the cursor is below 50%
-    // When dragging upwards, only move when the cursor is above 50%
+      // Get pixels to the top
+      const hoverClientY = clientOffset.y - hoverBoundingRect.top;
 
-    // Dragging downwards
-    if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
-      return;
+      // Only perform the move when the mouse has crossed half of the items height
+      // When dragging downwards, only move when the cursor is below 50%
+      // When dragging upwards, only move when the cursor is above 50%
+
+      // Dragging downwards
+      if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
+        return;
+      }
+
+      // Dragging upwards
+      if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
+        return;
+      }
+
+      // Time to actually perform the action
+      props.moveComponent(dragIndex, hoverIndex);
+
+      // Note: we're mutating the monitor item here!
+      // Generally it's better to avoid mutations,
+      // but it's good here for the sake of performance
+      // to avoid expensive index searches.
+      monitor.getItem().index = hoverIndex;
+    } else {
+      const schema = item.schema;
+      const hoverIndex = props.index;
+      if(props.addComponent) {
+        props.addComponent(hoverIndex, schema);
+        monitor.getItem().index = hoverIndex;
+        monitor.getItem().isNew = false;
+      }
     }
-
-    // Dragging upwards
-    if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
-      return;
-    }
-
-    // Time to actually perform the action
-    props.moveComponent(dragIndex, hoverIndex);
-
-    // Note: we're mutating the monitor item here!
-    // Generally it's better to avoid mutations,
-    // but it's good here for the sake of performance
-    // to avoid expensive index searches.
-    monitor.getItem().index = hoverIndex;
   }
 };
 
 @DropTarget(ItemTypes.FORMCOMPONENT, formComponentTarget, connect => ({
   connectDropTarget: connect.dropTarget()
 }))
-@DragSource(ItemTypes.FORMCOMPONENT, formComponetSource, (connect, monitor) => ({
-  connectDragSource: connect.dragSource(),
-  isDragging: monitor.isDragging()
-}))
+@DragSource(ItemTypes.FORMCOMPONENT, formComponetSource, (connect, monitor) => {
+  return {
+    connectDragSource: connect.dragSource(),
+    isDragging: monitor.isDragging()
+  };
+})
+
 export default class FormComponent extends Component {
   static propTypes = {
     connectDragSource: PropTypes.func.isRequired,
@@ -81,9 +114,13 @@ export default class FormComponent extends Component {
     index: PropTypes.number.isRequired,
     isDragging: PropTypes.bool.isRequired,
     id: PropTypes.any.isRequired,
+    isNew: PropTypes.bool.isRequired,
     schema: PropTypes.any,
-    moveComponent: PropTypes.func.isRequired,
-    removeComponent: PropTypes.func.isRequired
+    moveComponent: PropTypes.func,
+    removeComponent: PropTypes.func,
+    addComponent: PropTypes.func,
+    addedComponent: PropTypes.func,
+    cancelAddComponent: PropTypes.func
   }
 
   renderSelect(options) {
@@ -110,15 +147,22 @@ export default class FormComponent extends Component {
   }
 
   onClick() {
-    const { id, index, removeComponent } = this.props;
-    removeComponent(id, index);
+    const { index, removeComponent } = this.props;
+    removeComponent(index);
   }
 
   render() {
-    const { schema, isDragging, connectDragSource, connectDropTarget } = this.props;
-    const opacity = isDragging ? 0 : 1;
+    const {
+      schema,
+      isDragging,
+      isAdding,
+       connectDragSource,
+       connectDropTarget
+    } = this.props;
+    const opacity = isDragging || isAdding ? 0 : 1;
     const title = Object.keys(schema)[0];
     const { type, options } = schema[title];
+
     return connectDragSource(connectDropTarget(
       <div style={ { ...style, opacity } }>
         <label>{ title }</label>&nbsp;
