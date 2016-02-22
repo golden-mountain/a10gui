@@ -51,13 +51,11 @@ export default {
         ...baseConfig.module.loaders,
         {
           test: /\.(jpe?g|png|gif|woff|woff2|eot|ttf|svg)(\?v=[0-9].[0-9].[0-9])?$/,
-          loader: 'file?name=[sha512:hash:base64:7].[ext]',
-          exclude: /node_modules\/(?!font-awesome|bootstrap)/
+          loader: 'url?name=[sha512:hash:base64:7].[ext]'
         },
         {
           test: /\.css$/,
-          loader: 'style!css?sourceMap!postcss',
-          exclude: /node_modules/
+          loader: 'style!css?sourceMap!postcss'          
         }
       ]
     },

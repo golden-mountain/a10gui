@@ -7,6 +7,10 @@ import { RaisedButton } from 'material-ui/lib';
 
 import { Radios, AxText, AxTable } from 'widgets';
 
+import MyEditorTemplate from 'templates/MyEditorTemplate';
+loader.addTemplate('EditorTemplate', MyEditorTemplate);
+loader.addTemplate('FieldSetTemplate', FSTemplate);
+loader.addTemplate('FormTemplate', FmSTemplate);
 
 const styles = {
   block: {
@@ -62,6 +66,7 @@ class SubschemaPage extends Component {
         make: {
           'title': 'Make',
           'type': 'Select',
+          'btnAdd': 'template/add',
           'placeholder': 'Select a make',
           'help': 'try to select this item, see if model will be connected'
         },
@@ -105,10 +110,10 @@ class SubschemaPage extends Component {
         table: { type: 'AxTable', title:''}
       },
       fieldsets: [
-          { template: FSTemplate, size:6, fieldsets: 
+          {  size:6, fieldsets: 
             [
-              {fields: [ 'title', 'email', 'name', 'birthday', 'make', 'model' ], template: FSTemplate, legend: '' }, 
-              {fields: [ 'password', 'areYouSure', 'content' ], template: FSTemplate, legend: 'Advance' ,  
+              {fields: [ 'title', 'email', 'name', 'birthday', 'make', 'model' ],  legend: '' }, 
+              {fields: [ 'password', 'areYouSure', 'content' ],  legend: 'Advance' ,  
                 conditional:{
                   path:'name',
                   value:'zli',
@@ -116,11 +121,11 @@ class SubschemaPage extends Component {
                 }
               },
               {
-                fields: [ 'address.street', 'address.city', 'address.zip' ], template: FSTemplate, legend: 'Address'
+                fields: [ 'address.street', 'address.city', 'address.zip' ],  legend: 'Address'
               }
             ]
           },
-          { legend: 'Material UI', template: FSTemplate, size:6, fields: [ 'table', 'name2', 'radios' ] }
+          { legend: 'Material UI',  size:6, fields: [ 'table', 'name2', 'radios' ] }
       ]
 
     };
@@ -211,7 +216,6 @@ class SubschemaPage extends Component {
           onSubmit={ ::this.handleSubmit }
           valueManager={ this.valueManager }
           className='container-fluid'
-          template={ FmSTemplate }
           schema={ schema } >
           <div className='col col-md-12 '>
             <div className='pull-right'>
