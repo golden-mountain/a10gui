@@ -59,7 +59,7 @@ class SubschemaPage extends Component {
       schema: {
         title: { type: 'Select', options: [ 'Mr', 'Mrs', 'Ms' ] },
         name:  { type: 'Text', placeholder:'try to input zli' },
-        name2:  { type: 'AxText', placeholder:'demo for material ui', validators: [ 'required' ] }, 
+        name2:  { type: 'AxText', placeholder:'demo for material ui', validators: [ 'required' ] },
         email: { validators: [ 'required', 'email' ] },
         birthday: 'Date',
         radios: 'Radios',
@@ -78,7 +78,7 @@ class SubschemaPage extends Component {
             'listen': 'make',
             'operator': 'falsey'
           }
-        },       
+        },
         password: {type: 'Password', validators: [ 'required' ]},
         areYouSure: {
           type: 'SwitchButton',
@@ -92,7 +92,7 @@ class SubschemaPage extends Component {
           className: 'col-sm-offset-2',
           content: '{title} {..name} is {birthday}'
         },
-        address: { 
+        address: {
           type: 'Object',
           subSchema: {
             street: {
@@ -110,10 +110,10 @@ class SubschemaPage extends Component {
         table: { type: 'AxTable', title:''}
       },
       fieldsets: [
-          {  size:6, fieldsets: 
+          {  size:6, fieldsets:
             [
-              {fields: [ 'title', 'email', 'name', 'birthday', 'make', 'model' ],  legend: '' }, 
-              {fields: [ 'password', 'areYouSure', 'content' ],  legend: 'Advance' ,  
+              {fields: [ 'title', 'email', 'name', 'birthday', 'make', 'model' ],  legend: '' },
+              {fields: [ 'password', 'areYouSure', 'content' ],  legend: 'Advance' ,
                 conditional:{
                   path:'name',
                   value:'zli',
@@ -220,7 +220,7 @@ class SubschemaPage extends Component {
           <div className='col col-md-12 '>
             <div className='pull-right'>
               <RaisedButton label='Create' type='submit' primary={ true } />
-              <RaisedButton label='Cancel' />              
+              <RaisedButton label='Cancel' />
             </div>
           </div>
         </Form>

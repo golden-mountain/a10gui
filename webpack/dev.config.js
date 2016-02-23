@@ -50,12 +50,14 @@ export default {
       loaders: [
         ...baseConfig.module.loaders,
         {
-          test: /\.(jpe?g|png|gif|woff|woff2|eot|ttf|svg)(\?v=[0-9].[0-9].[0-9])?$/,
-          loader: 'url?name=[sha512:hash:base64:7].[ext]'
+          test: /\.(jpe?g|png|gif|svg|woff|woff2|eot|ttf)(\?v=[0-9].[0-9].[0-9])?$/,
+          loader: 'url?name=[sha512:hash:base64:7].[ext]',
+          exclude: /node_modules\/(?!font-awesome)/
         },
         {
           test: /\.css$/,
-          loader: 'style!css?sourceMap!postcss'          
+          loader: 'style!css?sourceMap!postcss',
+          exclude: /node_modules/
         }
       ]
     },
