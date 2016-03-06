@@ -5,7 +5,7 @@ import FSTemplate from 'templates/FSTemplate';
 import FmSTemplate from 'templates/FmTemplate';
 import { RaisedButton } from 'material-ui/lib';
 
-import { Radios, AxText, AxTable } from 'widgets';
+import { Radios, AxText, AxTable, FieldGroup } from 'widgets';
 
 import MyEditorTemplate from 'templates/MyEditorTemplate';
 loader.addTemplate('EditorTemplate', MyEditorTemplate);
@@ -63,6 +63,16 @@ class SubschemaPage extends Component {
         email: { validators: [ 'required', 'email' ] },
         birthday: 'Date',
         radios: 'Radios',
+        fieldGroup: {
+            type: 'FieldGroup', 
+            fieldAttrs: {title: 'Field Group'},
+            fields: "street, city, state, zip",
+            subSchema: {
+                street: {type: 'Text', validators: ['required'], title:''},
+                zip: {type: 'Text', validators: ['required']},
+                city: {type: 'Text', validators: ['required']},     
+            }            
+        },
         make: {
           'title': 'Make',
           'type': 'Select',
@@ -113,7 +123,7 @@ class SubschemaPage extends Component {
           {  size:6, fieldsets:
             [
               {fields: [ 'title', 'email', 'name', 'birthday', 'make', 'model' ],  legend: '' },
-              {fields: [ 'password', 'areYouSure', 'content' ],  legend: 'Advance' ,
+              {fields: [ 'password', 'areYouSure', 'content', 'fieldGroup' ],  legend: 'Advance' ,
                 conditional:{
                   path:'name',
                   value:'zli',

@@ -24,6 +24,7 @@ export default function ServerHTML({ body, assets, locale, title, description })
         <title>{ title }</title>
       </head>
       <body>
+        <h1 className='center-block' style={{textAlign:'center'}}> AX GUI </h1>
         <div id='content' dangerouslySetInnerHTML={ { __html: body } } />
         <script src={ assets.script[0] } />
       </body>
