@@ -5,45 +5,82 @@ import Subschema, { types } from 'subschema/dist/subschema-server';
 const {decorators, PropTypes, tutils} = Subschema;
 const {Select} = types;
 const {provide} = decorators;
-const {extend} = tutils;
+const {extend, returnFirst, isArray} = tutils;
 
 @provide.type
-class EditableSelect extends React.Component {
-    static inputClassName = ' ';
+export default class EditableSelect extends Component {
+
 
     static propTypes = {
-        onChange: PropTypes.valueEvent
-    };
+        options: PropTypes.options,
+        multiple: PropTypes.bool,
+        onChange: PropTypes.valueEvent,
+        placeholder: PropTypes.placeholder
+    }
 
     static defaultProps = {
+        options: [],
+        multiple: false
+    }
 
-    };
+    handleSelect = (e)=> {
+        var {multiple, placeholder} = this.props;
+        if (multiple) {
+            //normalize multiple  selection
+            var values = [], options = e.target.options, i = 0, l = options.length, option;
+            for (; i < l; i++) {
+                option = options[i];
+                if (option.selected) {
+                    if (option.label != placeholder)
+                        values.push(option.value);
+                }
+            }
+            this.props.onChange(values);
+            return
+        } else if (e.target.value === placeholder) {
+            this.props.onChange(null);
+            return;
+        }
 
-    //This is bound to the object instance
-    handleClick = (e)=> {
-        //This updates the valueManager
-        this.props.onChange(this.isChecked(this.props.value) ? '' : 'on');
-    };
+        this.props.onChange(e.target.value);
+    }
+
+    renderOptions(value) {
+        var {multiple, options, placeholder} = this.props;
+
+        options = options || [];
+        var hasValue = false, ret = options.map(multiple ? (o, i)=> {
+            return <option key={'s' + i} value={o.val}>{o.label}</option>;
+        } : (o, i)=> {
+            if (!hasValue && o.val + '' == value + '') hasValue = true;
+            return <option key={'s' + i} value={o.val}>{o.label}</option>
+        });
+
+        if (placeholder) {
+            ret.unshift(<option key={'null-' + options.length}>
+                {placeholder}</option>);
+        }
+        return ret;
+    }
+
+    handleCreate = (e) => {
+        this.props.onChange('model_show');
+        e.preventDefault();
+    }
 
     render() {
-        var props = this.props;
-        var isChecked = this.isChecked(props.value);
-
-        //you prolly won't do it this way, but use classes instead, but the demo platform
-        // has its limitations.
-        var container = extend({}, styles.container, isChecked ? styles.on : styles.off);
-        var button = extend({}, styles.button, isChecked ? styles.buttonOn : styles.buttonOff);
-
-        return <div className={props.className} style={styles.fieldContainer}>
-            <div style={container} onClick={this.handleClick}>
-                <input name={props.name} type="hidden" value={this.props.value}/>
-                {isChecked === true ? props.onText : props.offText}
-                <span style={button}/>
-            </div>
+        var { onChange,value, ...props} = this.props;
+        if (props.multiple && !isArray(value)) {
+            value = value ? [value] : value;
+        }
+        console.log(value, 'change');
+        return <div className="input-group">
+            <select className='form-control' {...props} value={value} onChange={this.handleSelect} >
+                {this.renderOptions(value)}
+            </select>
+            <a  href='#' onClick={::this.handleCreate} className="input-group-addon">A</a>
+            <a  href='#' onClick={::this.handleCreate} className="input-group-addon">E</a>
         </div>
     }
 
 }
-
-
-export default EditableSelect;

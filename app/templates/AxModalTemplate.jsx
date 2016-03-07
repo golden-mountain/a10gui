@@ -1,12 +1,9 @@
 "use strict";
 import React, {Component, Children} from 'react';
-import Buttons from './ButtonsTemplate.jsx';
-import Content from '../types/Content.jsx'
-import styles from 'subschema-styles/ModalTemplate-style';
-import ValueManager from '../ValueManager';
-import Editor from '../components/Editor';
-import PropTypes from '../PropTypes';
-import NewChildContext from '../components/NewChildContext.jsx';
+import {styles, types, decorators, NewChildContext, PropTypes, Editor, ValueManager, templates } from 'subschema/dist/subschema-server';
+let style = styles['ModalTemplate'];
+let Content = types.Content;
+let Buttons = templates.ButtonsTemplate;
 
 class ModalTemplate extends Component {
 
@@ -48,22 +45,22 @@ class ModalTemplate extends Component {
 
     renderFooter(buttons) {
         if (!buttons) return null;
-        return <div className={styles.footer}><Buttons buttons={buttons} onButtonClick={this.handleBtnClose}/></div>
+        return <div className={style.footer}><Buttons buttons={buttons} onButtonClick={this.handleBtnClose}/></div>
     }
 
     render() {
         var {title, buttons, path,value, children, ...rest} = this.props;
-        return <div className={`${styles.namespace} ${styles.overlay}`} style={{display:'block'}}>
-            <div className={styles.backdrop}></div>
-            <div className={styles.dialog} role="document" style={{zIndex:2000}}>
-                <div className={styles.content}>
-                    <div className={styles.header}>
-                        <button onClick={this.handleClose} className={styles.close} name={this.props.dismiss}
+        return <div className={`${style.namespace} ${style.overlay}`} style={{display:'block'}}>
+            <div className={style.backdrop}></div>
+            <div className={style.dialog} role="document" style={{zIndex:2000}}>
+                <div className={style.content}>
+                    <div className={style.header}>
+                        <button onClick={this.handleClose} className={style.close} name={this.props.dismiss}
                                 value={value}
                                 aria-label="Close"><span aria-hidden="true">&times;</span></button>
                         {title ? <Content type='h4'  {...rest} content={title}/> : null }
                     </div>
-                    <div className={styles.body}>
+                    <div className={style.body}>
                         {children}
                     </div>
                     {this.renderFooter(buttons)}

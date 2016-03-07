@@ -5,12 +5,14 @@ import FSTemplate from 'templates/FSTemplate';
 import FmSTemplate from 'templates/FmTemplate';
 import { RaisedButton } from 'material-ui/lib';
 
-import { Radios, AxText, AxTable, FieldGroup } from 'widgets';
+import { Radios, AxText, AxTable, FieldGroup, EditableSelect } from 'widgets';
 
 import MyEditorTemplate from 'templates/MyEditorTemplate';
+import AxModalTemplate from 'templates/AxModalTemplate';
 loader.addTemplate('EditorTemplate', MyEditorTemplate);
 loader.addTemplate('FieldSetTemplate', FSTemplate);
 loader.addTemplate('FormTemplate', FmSTemplate);
+loader.addTemplate('AxModalTemplate', AxModalTemplate);
 
 const styles = {
   block: {
@@ -116,14 +118,74 @@ class SubschemaPage extends Component {
             }
           }
         },
+        editableSelect: {
+            options: [
+                {
+                    val: 0,
+                    label: "Option 1"
+                },
+                {
+                    val: 1,
+                    label: "Option 2"
+                },
+                {
+                    val: 2,
+                    label: "Option 33"
+                }
+            ],
+            type: 'EditableSelect'
+        },        
+        "virtualServerTemplate": {
+            type: "Object",
+            title: false,
+            conditional: {
+                listen: "editableSelect",
+                operator: '/model_show/',
+                template: 'AxModalTemplate',
+                dismiss: 'editableSelect',
+                dismissValuePath: 'virtualServerTemplate.name',
+                title: "See the modal?",
+                buttons: {
+                    buttonsClass:'pull-right btn-group',
+                    buttons: [
+                        {
+                            label: "Cancel",
+                            action: 'cancel',
+                            className: 'btn'
+                        },
+                        {
+                            label: "Save",
+                            action: 'submit',
+                            className: 'btn btn-primary'
+                        }
+                    ]
+                }
+            },
+
+            fields: "name, city, state, zip",
+            subSchema: {
+                name: {type: 'Text', validators: ['required']},
+                city: 'Text',
+                state: {
+                    options: ['CA', 'NV', 'DE'],
+                    type: 'Select'
+                },
+                zip: {
+                    type: 'Text',
+                    validators: ['required', {type: 'regexp', regexp: '/^[0-9]{5}(-([0-9]{4}))?$/'}]
+                }
+            }
+        },
         notes: { type: 'List', itemType: 'Text' },
         table: { type: 'AxTable', title:''}
       },
+
+
       fieldsets: [
           {  size:6, fieldsets:
             [
               {fields: [ 'title', 'email', 'name', 'birthday', 'make', 'model' ],  legend: '' },
-              {fields: [ 'password', 'areYouSure', 'content', 'fieldGroup' ],  legend: 'Advance' ,
+              {fields: [ 'password', 'areYouSure', 'content', 'fieldGroup', 'editableSelect', 'virtualServerTemplate' ],  legend: 'Advance' ,
                 conditional:{
                   path:'name',
                   value:'zli',
