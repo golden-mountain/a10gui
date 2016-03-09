@@ -33,6 +33,10 @@ export default function (flux) { /* eslint react/display-name: 0 */
         component: require('./pages/subschema')
       }) }
       { generateRoute({
+        paths: [ '/virtual-server' ],
+        component: require('./pages/virtual-server')
+      }) }
+      { generateRoute({
         paths: [ '/subschema' ],
         component: require('./pages/customized-ui')
       }) }

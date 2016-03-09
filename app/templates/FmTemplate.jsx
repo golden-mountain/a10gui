@@ -2,7 +2,9 @@
 
 import React, {Component} from 'react';
 import {templates} from 'Subschema';
+import {decorators} from 'subschema/dist/subschema-server';
 
+@decorators.provide.template
 export default class FmTemplate extends templates.FormTemplate {
 
     render() {

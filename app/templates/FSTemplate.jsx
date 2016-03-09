@@ -1,8 +1,10 @@
 import React, {Component} from 'react';
 import {Col} from 'widgets/layouts';
-import {templates} from 'Subschema';
+import {decorators, templates} from 'subschema/dist/subschema-server';
+
 const {FieldSetTemplate} = templates;
 
+@decorators.provide.template
 export default class FSTemplate extends FieldSetTemplate {
 
 

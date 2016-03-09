@@ -5,6 +5,7 @@ let style = styles['ModalTemplate'];
 let Content = types.Content;
 let Buttons = templates.ButtonsTemplate;
 
+@decorators.provide.template
 class ModalTemplate extends Component {
 
     static contextTypes = {

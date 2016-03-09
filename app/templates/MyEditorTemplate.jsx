@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {types} from 'Subschema';
+import {decorators, types} from 'subschema/dist/subschema-server';
 let {Content} = types;
 
 const style = {
@@ -23,7 +23,8 @@ const styles = {
     }
 };
 
-export default class MyEditorTemplate extends Component {
+@decorators.provide.template
+class MyEditorTemplate extends Component {
     render() {
         var {name, title, help, error, errorClassName, message, fieldClass,  children, field:{btnAdd}} = this.props;
         if (!title) {
@@ -48,3 +49,5 @@ export default class MyEditorTemplate extends Component {
         </div>);
     }
 }
+
+export default MyEditorTemplate;
